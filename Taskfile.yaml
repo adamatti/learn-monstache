@@ -27,3 +27,19 @@ tasks:
     cmds:
       - docker compose stop monstache
       - docker compose up -d monstache
+
+  build:
+    cmds:
+      - docker compose build monstache
+
+  golang:
+    desc: Run a golang container
+    aliases: [g]
+    cmds:
+      - >-
+        docker run -it --rm
+        --entrypoint /bin/sh
+        -v ./monstache/go:/app
+        -w /app
+        --platform linux/amd64
+        golang:1.20.4

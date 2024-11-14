@@ -1,6 +1,9 @@
 services:
   monstache:
-    image: rwynn/monstache:6.7.4
+    build:
+      context: ./monstache/go
+      platforms:
+        - "linux/amd64"
     working_dir: /app
     command: -f ./config.toml
     volumes:

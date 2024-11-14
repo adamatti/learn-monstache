@@ -95,7 +95,7 @@ elasticsearch-password = "elasticsearch-password"
 # file-namespaces = ["users.fs.files"]
 
 # print detailed information including request traces
-verbose = true
+verbose = false
 
 # enable clustering mode
 cluster-name = 'apollo'
@@ -108,11 +108,4 @@ enable-http-server = true
 elasticsearch-max-seconds = 5
 elasticsearch-max-conns = 6
 
-[[script]]
-namespace = "app.users"
-path = "/app/js/app.user.js"
-routing = true
-
-[[mapping]]
-namespace = "app.users"
-index = "users"
+mapper-plugin-path = "/bin/plugin.so"
