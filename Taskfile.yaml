@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://json.schemastore.org/taskfile.json
+---
+version: "3"
+
+tasks:
+  default:
+    desc: Show help
+    aliases: [h]
+    silent: true
+    cmds:
+      - task -l --sort alphanumeric
+
+  up:
+    desc: up
+    aliases: [start]
+    cmds:
+      - docker compose up -d --remove-orphans
+  
+  stop:
+    desc: stop
+    cmds:
+      - docker compose stop -t 0
+
+  restart:
+    desc: Restart
+    aliases: [r]
+    cmds:
+      - docker compose stop monstache
+      - docker compose up -d monstache

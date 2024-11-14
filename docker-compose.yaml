@@ -1,0 +1,88 @@
+services:
+  monstache:
+    image: rwynn/monstache:6.7.4
+    working_dir: /app
+    command: -f ./monstache.config.toml
+    volumes:
+      - ./monstache/config.toml:/app/monstache.config.toml
+      # - ./plugin/plugin.so:/app/plugin.so
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: "wget -q -O - http://localhost:8080/healthz"
+      interval: 10s
+      timeout: 30s
+      retries: 300
+    depends_on:
+      mongo:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+
+  elasticsearch:
+    image: elasticsearch:8.13.4
+    container_name: elastic
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - ELASTIC_PASSWORD=elasticsearch-password
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - ./esdata-8:/var/lib/elasticsearch/data
+    healthcheck:
+      test: "curl --fail http://localhost:9200 || exit 1"
+      interval: 2s
+      timeout: 60s
+      retries: 300
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: ["CMD", "/health-check.sh"]
+      interval: 15s
+      timeout: 10s
+      retries: 8
+    volumes:
+      - ./shell/mongo-health-check.sh:/health-check.sh
+    tmpfs:
+      - /data/db
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
+    environment:
+      - MONGO_INITDB_DATABASE=upkeep
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mongoSetup:
+    container_name: mongo-setup
+    image: mongo:6
+    restart: "no"
+    command: >
+      mongosh --host mongo:27017 --eval 
+      '
+      db = (new Mongo("mongo:27017")).getDB("test");
+      config = {
+      "_id" : "dbrs",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "host.docker.internal:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongodb_data:
+    name: mongodb_data
+  esdata:
+    driver: local
