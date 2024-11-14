@@ -2,9 +2,9 @@ services:
   monstache:
     image: rwynn/monstache:6.7.4
     working_dir: /app
-    command: -f ./monstache.config.toml
+    command: -f ./config.toml
     volumes:
-      - ./monstache/config.toml:/app/monstache.config.toml
+      - ./monstache:/app
       # - ./plugin/plugin.so:/app/plugin.so
     ports:
       - "8080:8080"

@@ -107,3 +107,8 @@ exit-after-direct-reads = false
 enable-http-server = true
 elasticsearch-max-seconds = 5
 elasticsearch-max-conns = 6
+
+[[script]]
+namespace = "app.users"
+path = "/app/js/app.user.js"
+routing = true
