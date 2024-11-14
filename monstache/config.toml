@@ -112,3 +112,7 @@ elasticsearch-max-conns = 6
 namespace = "app.users"
 path = "/app/js/app.user.js"
 routing = true
+
+[[mapping]]
+namespace = "app.users"
+index = "users"
