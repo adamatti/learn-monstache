@@ -13,6 +13,19 @@ curl "http://localhost:9200/app.users/_search?pretty=true"
 
 ```
 
+# Second run - transformation
+
+```sh
+docker compose up -d
+
+# insert on mongo
+db.users.insertOne({name: "Marcelo Password", password: "123"})
+
+# Check on elastic
+curl "http://localhost:9200/app.users/_search?pretty=true"
+
+```
+
 # References
 
 - https://github.com/rwynn/monstache
